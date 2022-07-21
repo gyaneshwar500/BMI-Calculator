@@ -1,0 +1,20 @@
+import pandas as pd
+import numpy as np
+
+dic1={'Gender':['Male','Male','Male','Female','Female','Female'],'HeightCm':[171,161,180,166,150,167],'WeightKg':[96,85,77,62,70,82]}
+df1=pd.DataFrame(dic1)
+df1['heightinMeter']=df1['HeightCm']/100
+df1['Height Square']=df1['heightinMeter']**2
+
+df1['BMI Range']=df1['WeightKg']/df1['Height Square']
+
+bins = [0, 18.5, 25, 30, 35, 40, np.inf]
+names = ['18.5 and below', '18.5-25', '25-30', '30-35', '35-40', '40 and above']
+df1['BMI_Ranges'] = pd.cut(df1['BMI Range'], bins, labels=names)
+
+df1['Category']=df1['BMI_Ranges'].map({'0-18.5':'UnderWeight','18.5-25':'NormalWeight','25-30':'Overweight','30-35':'Moderately Obese','35-40':'Severly Obese','40 and above':'Very Seriously Obese'})
+df1['Health Risk']=df1['Category'].map({'Moderately Obese':'Medium risk','NormalWeight':'Low risk','Overweight':'Enhanced risk','Severly Obese':'High risk','Very Seriously Obese':'Very high risk'})
+
+df1.columns=['Gender','HeightCm','WeightKg','Height_in_meter','Height Square','BMI Value','BMI Range','BMI Category','Health Risk']
+
+df1.to_excel('BMI Calculator.xlsx')
